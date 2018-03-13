@@ -21,10 +21,31 @@ namespace TextboxTest
     /// </summary>
     public partial class MainWindow : Window
     {
+        Regex number_regex = new Regex("([0-9-])");
+        Regex komma_regex = new Regex("([0-9,-])");
         bool komma = false;
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        public string Text
+        {
+            get
+            {
+                txtBox.Text = txtBox.Text.Replace(" ", "");               
+                string[] numbers = txtBox.Text.Split('-');
+                double result = Convert.ToDouble(numbers[0]);
+                for(int i = 1; i < numbers.Length; i++)
+                {
+                    result -= Convert.ToDouble(numbers[i]);
+                }
+                return result.ToString();
+            }
+            set
+            {
+                txtBox.Text = value;
+            }
         }
 
         private void txtBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -33,19 +54,30 @@ namespace TextboxTest
         }
 
         private bool IsTextAllowed(string text)
-        {
-            
+        {            
             if (komma)
-            {
-                Regex regex = new Regex("([0-9])");
-                return regex.IsMatch(text);
+            {                
+                return number_regex.IsMatch(text);
             }
             else
             {
-                komma = new Regex(",").IsMatch(text);
-                Regex regex = new Regex("([0-9,])");
-                return regex.IsMatch(text);
+                return komma_regex.IsMatch(text);
             }
+        }
+
+        private void txtBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            komma = txtBox.Text.Contains(",");
+        }
+
+        private void btnLöschen_Click(object sender, RoutedEventArgs e)
+        {
+            txtBox.Text = "";
+        }
+
+        private void getText_Click(object sender, RoutedEventArgs e)
+        {
+            txtBlock.Text = Text;
         }
     }
 }
