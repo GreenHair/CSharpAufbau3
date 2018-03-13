@@ -50,7 +50,7 @@ namespace TextboxTest
 
         private void txtBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            e.Handled = !IsTextAllowed(e.Text);
+            e.Handled = !IsTextAllowed(e.Text);            
         }
 
         private bool IsTextAllowed(string text)
@@ -61,13 +61,14 @@ namespace TextboxTest
             }
             else
             {
+                komma = text == ",";
                 return komma_regex.IsMatch(text);
             }
         }
 
         private void txtBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            komma = txtBox.Text.Contains(",");
+            if(txtBox.Text.Length == 0) { komma = false; }
         }
 
         private void btnLöschen_Click(object sender, RoutedEventArgs e)
@@ -78,6 +79,14 @@ namespace TextboxTest
         private void getText_Click(object sender, RoutedEventArgs e)
         {
             txtBlock.Text = Text;
+        }
+
+        private void txtBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.OemMinus || e.Key == Key.Subtract)
+            {
+                komma = false;
+            }
         }
     }
 }
